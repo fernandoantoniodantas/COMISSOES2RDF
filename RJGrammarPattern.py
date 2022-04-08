@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Dec 14 16:18:50 2019
+Created on Sat Dec 14 16:18:50 2020
 
 @@author: A
 @author: B
 
-Classe responsável por fazer a chamada para construção do arquivo de auditoria e persistencia no banco de dados PostgreSql.
+
 """
 
 from LayoutAtos import LayoutAtos 
@@ -47,11 +47,11 @@ class RioJaneiroLayoutFinal(LayoutAtos):
         diario.anoromano = (diario_edicao.group(1))
         diario.ano = (util.converteRomano(diario_edicao.group(1)))
         diario.numero = (diario_edicao.group(2))
-        diario.nomearquivo = None #str(arquivo)
-        diario.datadiario = None #Colocar aqui a informação correta da data do diário
+        diario.nomearquivo = None 
+        diario.datadiario = None 
         diario.tipo = (tipo)
-        diario.identidade = None #int(1) #Codigo provisorio do Rio de Janeiro
-        diario.datagravacao = None #Colocar aqui uam finção de data atual do sistema
+        diario.identidade = None 
+        diario.datagravacao = None #
         RioDAO.gravaDiario(diario)
                
   
@@ -104,9 +104,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
         for resolucao in resolucao_pattern.finditer(buffer):
             inicio.append(resolucao.start())
             contador=contador + 1 
-        inicio.append(tamanho)        
-            
-  
+        inicio.append(tamanho)    
  
         for i in range(len(inicio)-1):
             bloco.append(inicio[i+1]-inicio[i])
@@ -118,8 +116,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             resolucao1 = resolucao1_pattern.search(buffer_local)
             if (resolucao1):
                 Tipo = '{: <11}'.format(resolucao1.group('resolucao1'))
-                Detalhe = resolucao1.group('detalhe_resolucao1')
-                
+                Detalhe = resolucao1.group('detalhe_resolucao1')                
             else:
                 #print('Não casou resolucao1')
                 Tipo = 'SEM TIPO'
@@ -228,8 +225,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
                    ato.simbolo = '{: <6}'.format(servidor[i].simbolo.replace('\n', ''))
                    print(ato.CPF, Tipo, ato.numero, ato.dataResolucao, 'EXONERAR ',  ato.matricula, ato.nome, ato.dataEfeito, ato.cargo, ato.simbolo, ato.tipocargo, file=arq1)
                    persistencia.insert(ato.matricula, ato.nome, ato.dataResolucao, 'EXONERAR', ato.dataEfeito, ato.cargo, ato.tipocargo, ato.simbolo)
-
-               
+              
        ######################## RESOLUÇÃO SIMPLES ########################### 
               
             elif ((resolucao1.group('resolucao1') == 'RESOLUÇÃO') or (resolucao1.group('resolucao1') == 'RESOLUÇAO') or (resolucao1.group('resolucao1') == 'RESOLUCAO') or (resolucao1.group('resolucao1') == 'DECRETO RIO') or (resolucao1.group('resolucao1') == 'PORTARIA')):
@@ -323,7 +319,6 @@ class RioJaneiroLayoutFinal(LayoutAtos):
 
 ####### COMISSOES ########
 
-
     def comissoes(self, buffer, arqComissoes, data_e_hora, perc, contarq, arquivo):
         print('ARQUIVO========================================================>',arquivo,'(COMISSÕES)', perc,'%' )
         ################# PROCESSA CABEÇALHO DO DIARIO ################
@@ -349,7 +344,6 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             diario.ano = 'XXXXXX'
             diario.numero = 'XXXXXX'
             diario.tipo = 'XXXXXXXXXXXX'
-
 
         print('', file=arqComissoes)
         print('(PUC-RIO/TECMF)   ::PROCESSAMENTO DO DIÁRIO::', 'ANO:', diario.ano,'No.:', diario.numero, 'TIPO:', diario.tipo, '* RIO DE JANEIRO * ARQUIVO:',arquivo, 'SEQ.:', '{:0>4}'.format(contarq), '                                             ',data_e_hora,  file=arqComissoes)
@@ -385,8 +379,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
                 #print('Não casou resolucao1')
                 Tipo = 'SEM TIPO'
                 Detalhe = 'SEM DETALHE'
-            #####################
-            
+            #####################            
             
             #### Gestor #####
             gestor_pattern = re.compile(r'(?P<gestor>[O|A]*\s(SECRETÁRI[O|A]+|PROCURADOR[A]*|PREFEITO[A]*|COORDENADOR[A]*)[A-ZÁÚÍÃÓÇÊÉ\s-]+)')
@@ -398,16 +391,14 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             ###### Fim Gestor
 
             #### Cabeçalho da Comisssão técnica #####
-            #comissao_pattern = re.compile(r'Institui [A-Za-zã\sé-]*\s*\((?P<tipoComissao>CTA)\)[.ºA-Za-zã\sçõé-]*\s*(?P<processo>[./0-9]*)[.ºA-Z\s*a-zã]*(?P<contrato>[./0-9]*)\s*\((?P<descontrato>[A-Z\s]*)\)')
             comissao_pattern = re.compile(r'(Institui|Designa)\s* [A-Za-zã\sé-]*\s*\((?P<tipoComissao>CTA)\)[.ºA-Za-zã\sçõé-]*\s*(?P<processo>[.\/0-9]*)[.ºA-Z\s*a-zã]*[,]*\s*[.ºA-Z\s*a-zã]*(?P<contrato>[./0-9]*)\s*\((?P<desccontrato>[a-zA-Z\s0-9.-–-]*)')
             comissao = comissao_pattern.search(buffer_local)
             Detalhe3 = ''
             if (comissao):
                 Detalhe3 = '<tipoComissao>'+comissao.group('tipoComissao')+'<numprocesso>'+comissao.group('processo')+'<numcontrato>'+comissao.group('contrato')+'<desccontrato>'+comissao.group('desccontrato')
 
-
             #### Detalhes da Comissão #####]
-            
+          
             comissao1_pattern = re.compile(r'Art.\s[1-2]+.\sDesignar os membros abaixo indicados para comporem a (?P<nomeComissao>[A-ZÉÁÍÓÚÇÃÊÔÕÀÜa-záêéóíçãâôú\-\n\s\–]+)[\-|\–]*\sCONVÊNIO\sN\w\s(?P<convenio>[0-9\/]+)\n*\s*Titulares\n*\s*Órgão\s*Nome\s*Matrícula\n*')
             comissao2_pattern = re.compile(r'Art.\s[1-2]+.\sDesignar os membros abaixo indicados para comporem a (?P<nomeComissao>[A-ZÉÁÍÓÚÇÃÊÔÕÀÜa-záêéóíçãâôú\-\n\s\–]+):\n*\s*Titulares\n*\s*Órgão\s*Nome\s*Matrícula\n*')
             
@@ -420,12 +411,8 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             
             if (comissao2):
                 Detalhe2 = '<NomeComissao>'+comissao1.group('nomeComissao')+'<ConvenioComissao>'+'0000'
-            
-            
-            
-            ###### Fim Gestor
-
-
+             
+          ###### Fim Gestor
             
          ################################# RESOLUÇÕES COMPOSTAS #############################
            
@@ -455,8 +442,6 @@ class RioJaneiroLayoutFinal(LayoutAtos):
                    comissoes.nome = '{: <43}'.format((comiss[i].nome).replace('\n', ' ').replace('  ', ' ').strip(" "))
                    comissoes.matricula = '{: <13}'.format(comiss[i].matricula)
                    persistencia.insertComissoes(comissoes.tipoComissao, comissoes.numero, comissoes.dataResolucao, comissoes.nomeComissao, comissoes.orgao, comissoes.numContrato, comissoes.numProcesso, comissoes.descContrato, comissoes.nome, comissoes.matricula)
- 
-  
         
 
     def do_nomeacao(self, buffer, arquivo):
@@ -467,10 +452,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
         
         contador = 1
         while (resolucao):
-            #print(contador)
-            #print(arquivo)
             contador = contador + 1
-          
             ind_headergestor = resolucao.end()
             buffer = buffer[ind_headergestor:]
             header_gestor_pattern = re.compile(r'((?:.|\n.)+)\n\n')
@@ -482,21 +464,14 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             ind_content = header_gestor.end()
             buffer = buffer[ind_content:]
 
-            
-            #resolucao1_pattern = re.compile(u'(?P<acao>Nomear)(?!a pedido)\s(?P<nome>[A-ZÁÉÍÓÚÃÕ\s]+)[,\s]*')
             resolucao1_pattern = re.compile(u'(?P<acao>Nomear)')
             
             resolucao = resolucao1_pattern.search(buffer)
             if resolucao:
                 print("===Atribuicao====")
                 print('Ação->'+resolucao.group('acao'))
-                #print('Servidor->'+resolucao.group('nome'))
                 ind_next_buffer_position = resolucao.end()
-                #buffer = buffer[ind_next_buffer_position:] 
-                #header_resol = header_pattern.search(buffer)
             else: print("NAO CASOU ATRIBUICAO")
-                #g.add( (donna, RDF.type, FOAF.Person) )       
-                #else: print("NÃO Casou content") 
             buffer = buffer[ind_next_buffer_position:] 
             resolucao = resolucao_pattern.search(buffer)
         print("Não Casou Resolução")
