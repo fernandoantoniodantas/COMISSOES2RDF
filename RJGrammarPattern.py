@@ -22,7 +22,7 @@ t = u"u00b0"
 
 import re
 
-class RioJaneiroLayoutFinal(LayoutAtos):    
+class RJGrammarPattern(LayoutAtos):    
    
     tipo = ""
     
@@ -52,11 +52,7 @@ class RioJaneiroLayoutFinal(LayoutAtos):
         diario.tipo = (tipo)
         diario.identidade = None 
         diario.datagravacao = None #
-        RioDAO.gravaDiario(diario)
-               
-  
-        
-        
+        RioDAO.gravaDiario(diario)            
         
     def resolucoes(self, buffer, arquivo, arq1, criticas, contarq, data_e_hora, arqres, perc, train_data,  BL, BUFFER):
         print('ARQUIVO========================================================>',arquivo,'(CARGOS)', perc,'%')
@@ -71,7 +67,6 @@ class RioJaneiroLayoutFinal(LayoutAtos):
            tipo = 'SUPLEMENTAR' #Suplemento
         else:
            tipo = 'NORMAL' #Normal 
-
         util = Util()
         diario = Diario() 
         if (diario_edicao.group(1)):               
@@ -86,14 +81,11 @@ class RioJaneiroLayoutFinal(LayoutAtos):
             diario.numero = 'XXXXXX'
             diario.tipo = 'XXXXXXXXXXXX'
 
-
         print('', file=arq1)
-        print('(PUC-RIO/TECMF)   ::PROCESSAMENTO DO DIÁRIO::', 'ANO:', diario.ano,'No.:', diario.numero, 'TIPO:', diario.tipo, '* RIO DE JANEIRO * ARQUIVO:',arquivo.upper(), 'SEQ.:', '{:0>4}'.format(contarq), '                                             ',data_e_hora,  file=arq1)
+        print('(<inst>-<loc>/<lab>)   ::PROCESSAMENTO DO DIÁRIO::', 'ANO:', diario.ano,'No.:', diario.numero, 'TIPO:', diario.tipo, '* RIO DE JANEIRO * ARQUIVO:',arquivo.upper(), 'SEQ.:', '{:0>4}'.format(contarq), '                                             ',data_e_hora,  file=arq1)
         print('', file=arq1) 
-
            
-        #############################################################
-        
+        #############################################################        
         resolucao_pattern = re.compile(r'^(\*RESOLUÇÕES|RESOLUÇÕES|RESOLUÇOES|RESOLUÇÃO|RESOLUÇAO|PORTARIAS|DECRETO RIO|PORTARIA)\s*(.)*\s*“P”.*',re.M)
         contador = 1
         cont=-1
